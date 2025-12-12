@@ -1,6 +1,8 @@
-import { connect, getLocalStorage, request } from '@stacks/connect';
+import { connect, getLocalStorage, request, disconnect, isConnected } from '@stacks/connect';
 
 function ConnectWallet() {
+  const authenticated = isConnected();
+
   async function handleWalletConnection() {
     // Connect to wallet
     const response = await connect();
@@ -19,11 +21,18 @@ function ConnectWallet() {
     const accounts = await request('stx_getAccounts');
     console.log('Account details:', accounts.addresses[0]);
   }
+
+  async function handleLogout() {
+    disconnect();
+  }
+
   return (
     <div>
-      <button onClick={handleWalletConnection}>
+      {!authenticated ? <button onClick={handleWalletConnection}>
         Connect Wallet
-      </button>
+      </button> : <button onClick={handleLogout}>
+        Disconnect
+      </button>}
     </div>
   )
 }

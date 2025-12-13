@@ -2,6 +2,7 @@ import { connect, getLocalStorage, request, disconnect, isConnected } from '@sta
 
 function ConnectWallet() {
   const authenticated = isConnected();
+  const userData = getLocalStorage();
 
   async function handleWalletConnection() {
     // Connect to wallet
@@ -14,7 +15,6 @@ function ConnectWallet() {
     if (stxAddresses && stxAddresses.length > 0) {
       const address = stxAddresses[0].address;
       console.log('STX Address:', address);
-      // 'SP1MXSZF4NFC8JQ1TTYGEC2WADMC7Y3GHVZYRX6RF'
     }
     
     // Get detailed account info if needed
@@ -33,6 +33,7 @@ function ConnectWallet() {
       </button> : <button onClick={handleLogout}>
         Disconnect
       </button>}
+      <p>{userData.addresses.stx[0].address}</p>
     </div>
   )
 }

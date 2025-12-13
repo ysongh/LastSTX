@@ -1,6 +1,9 @@
 ;; Last Counter Contract
 ;; This contract maintains a counter that can be incremented and return the last caller
 
+;; Define the contract owner (deployer)
+(define-constant contract-owner tx-sender)
+
 ;; Define a data variable to store the counter
 (define-data-var counter uint u0)
 

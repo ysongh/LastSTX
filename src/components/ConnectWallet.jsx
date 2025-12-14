@@ -1,6 +1,8 @@
-import { connect, getLocalStorage, request, disconnect } from '@stacks/connect';
+import { connect, getLocalStorage, request, isConnected, disconnect } from '@stacks/connect';
 
 function ConnectWallet({ address, setAddress }) {
+  const authenticated = isConnected();
+
   async function handleWalletConnection() {
     // Connect to wallet
     const response = await connect();
@@ -20,14 +22,27 @@ function ConnectWallet({ address, setAddress }) {
     console.log('Account details:', accounts.addresses[0]);
   }
 
+  async function handleGetAddress() {
+    const data = getLocalStorage();
+    const stxAddresses = data.addresses.stx;
+    
+    if (stxAddresses && stxAddresses.length > 0) {
+      const address = stxAddresses[0].address;
+      console.log('STX Address:', address);
+      setAddress(address);
+    }
+  }
+
   async function handleLogout() {
     disconnect();
   }
 
   return (
     <div>
-      {!address ? <button onClick={handleWalletConnection}>
+      {!authenticated ? <button onClick={handleWalletConnection}>
         Connect Wallet
+      </button> : ! address ? <button onClick={handleGetAddress}>
+        Get Address
       </button> : <button onClick={handleLogout}>
         Disconnect
       </button>}

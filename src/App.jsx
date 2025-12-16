@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import ConnectWallet from "./components/ConnectWallet";
 import Counter from './pages/Counter';
+import DeployContract from './pages/DeployContract';
 
 function App() {
   const [address, setAddress] = useState("");
@@ -12,6 +13,7 @@ function App() {
       <ConnectWallet address={address} setAddress={setAddress}/>
       <p>{address}</p>
       <Counter address={address} />
+      <DeployContract />
     </>
   )
 }

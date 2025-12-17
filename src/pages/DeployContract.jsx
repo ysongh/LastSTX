@@ -5,43 +5,15 @@ import { AnchorMode } from '@stacks/transactions';
 export default function DeployContract() {
   const [txId, setTxId] = useState('');
   const [status, setStatus] = useState('');
-
-  const contractCode = `
-;; Last Counter Contract (Clarity 4)
-(define-constant contract-owner tx-sender)
-(define-data-var counter uint u0)
-(define-data-var last-caller (optional principal) none)
-(define-data-var last-increment-time (optional uint) none)
-
-(define-public (increment)
-  (begin
-    (var-set counter (+ (var-get counter) u1))
-    (var-set last-caller (some tx-sender))
-    (var-set last-increment-time (some stacks-block-time))
-    (ok (var-get counter))))
-
-(define-read-only (get-counter)
-  (ok (var-get counter)))
-
-(define-read-only (get-last-caller)
-  (ok (var-get last-caller)))
-
-(define-read-only (get-last-increment-time)
-  (ok (var-get last-increment-time)))
-
-(define-public (reset)
-  (begin
-    (asserts! (is-eq tx-sender contract-owner) (err u403))
-    (var-set counter u0)
-    (ok true)))
-`;
+  const [contractCode, setContractCode] = useState('');
+  const [contractName, setContractName] = useState('');
 
   const deployContract = async () => {
     try {
       setStatus('Opening wallet...');
       
       await openContractDeploy({
-        contractName: 'counter-clarity4',
+        contractName: contractName,
         codeBody: contractCode,
         network: "testnet",
         anchorMode: AnchorMode.Any,
@@ -77,12 +49,36 @@ export default function DeployContract() {
           </p>
           
           <div className="space-y-4">
-            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-              <h3 className="text-white font-semibold mb-2">Contract: counter-clarity4</h3>
-              <p className="text-white/60 text-sm">
-                A simple counter that tracks increments, caller addresses, and timestamps
+      `      <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+              <label className="block text-white font-semibold mb-2">
+                Contract Name
+              </label>
+              <input
+                type="text"
+                value={contractName}
+                onChange={(e) => setContractName(e.target.value)}
+                placeholder="my-contract"
+                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <p className="text-white/50 text-xs mt-1">
+                Must be lowercase with hyphens (e.g., my-counter-contract)
               </p>
             </div>
+
+            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+              <label className="block text-white font-semibold mb-2">
+                Contract Code (Clarity)
+              </label>
+              <textarea
+                value={contractCode}
+                onChange={(e) => setContractCode(e.target.value)}
+                rows={15}
+                className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono text-sm"
+              />
+              <p className="text-white/50 text-xs mt-1">
+                Write your Clarity smart contract code here
+              </p>
+            </div>`
 
             <button
               onClick={deployContract}

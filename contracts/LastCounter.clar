@@ -18,7 +18,7 @@
   (begin
     (var-set counter (+ (var-get counter) u1))
     (var-set last-caller (some tx-sender))
-    (var-set last-increment-time (some block-height))
+    (var-set last-increment-time (some stacks-block-height))
     (ok (var-get counter))))
 
 ;; Read-only function to get the current counter value
@@ -39,4 +39,3 @@
     (asserts! (is-eq tx-sender contract-owner) (err u403))
     (var-set counter u0)
     (ok true)))
-    

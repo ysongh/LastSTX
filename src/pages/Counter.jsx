@@ -37,7 +37,7 @@ function Counter({ address }) {
   }
 
   return (
-    <div>
+    <div className="my-50">
       <button onClick={getCounter}>
         Get Counter
       </button>

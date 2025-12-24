@@ -16,6 +16,8 @@
 ;; Public function to increment the counter
 (define-public (increment)
   (begin
+    ;; Transfer 1 STX from caller to contract
+    (try! (stx-transfer? u1000000 tx-sender (as-contract tx-sender)))
     (var-set counter (+ (var-get counter) u1))
     (var-set last-caller (some tx-sender))
     (var-set last-increment-time (some stacks-block-height))
@@ -39,3 +41,16 @@
     (asserts! (is-eq tx-sender contract-owner) (err u403))
     (var-set counter u0)
     (ok true)))
+
+;; Public function to withdraw STX from contract (only contract owner)
+(define-public (withdraw (amount uint) (recipient principal))
+  (begin
+    (asserts! (is-eq tx-sender contract-owner) (err u403))
+    (as-contract (stx-transfer? amount tx-sender recipient))))
+
+;; Public function to withdraw all STX from contract (only contract owner)
+(define-public (withdraw-all)
+  (begin
+    (asserts! (is-eq tx-sender contract-owner) (err u403))
+    (let ((balance (stx-get-balance (as-contract tx-sender))))
+      (as-contract (stx-transfer? balance tx-sender contract-owner)))))
